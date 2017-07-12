@@ -31,8 +31,46 @@ const appLogic = require('./../appLogic/appLogic');
 app.use(bodyParser.json());
 
 // <----- User Section ----->
+// Create User
+app.post('/users', (req, res) => {
+
+});
+
+// Login
+app.post('/users/login', (req, res) => {
+
+});
+
+// Logout
+app.delete('users/logout', (req, res) => {
+
+});
 
 // <----- App Section ----->
+// Root - Get All Data
+app.get('/', (req, res) => {
+
+});
+
+// Create New Entry
+app.post('/budget', (req, res) => {
+
+});
+
+// View by id
+app.get('/budget/:id', (req, res) => {
+
+});
+
+// Update
+app.put('/budget/:id', (req, res) => {
+
+});
+
+// Delete Entry
+app.delete('/budget/:id', (req, res) => {
+
+});
 
 // <----- App Listen ----->
 app.listen(PORT, () => {
