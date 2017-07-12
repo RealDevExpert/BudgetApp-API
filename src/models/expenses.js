@@ -4,7 +4,6 @@ const {mongoose} = require('./../db/mongoose');
 // Schema
 const Schema = mongoose.Schema;
 const expenseSchema = new Schema({
-  const incomeSchema = new Schema({
     description: {
       type: String,
       required: true,
@@ -20,7 +19,7 @@ const expenseSchema = new Schema({
     created: {
       type: Date,
       default: Date.now
-    }
+    },
     updated: {
       type: Date,
       default: Date.now
@@ -34,7 +33,7 @@ const expenseSchema = new Schema({
       default: 0
     }
   });
-});
+
 
 // create model
 const expenses = mongoose.model('expenses', expenseSchema);
