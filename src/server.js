@@ -19,7 +19,7 @@ const _ = require('underscore');
 const bodyParser = require('body-parser');
 
 // load middleware
-const middleware = require('./middleware/middleware')();
+const middleware = require('./middleware/middleware')(); // give user detail and token
 
 // load auth
 const auth = require('./auth/auth');
@@ -28,7 +28,10 @@ const auth = require('./auth/auth');
 const appLogic = require('./appLogic/appLogic');
 
 // load bcryptjs
-const bcrypt =require('bcryptjs');
+const bcrypt = require('bcryptjs');
+
+// load dataStructure (Promise)
+const getDataStructure = require('./appLogic/appLogic');
 
 // <----- Middleware ----->
 app.use(bodyParser.json());
@@ -120,27 +123,27 @@ app.delete('/users/logout', middleware.requireAuthentication, (req, res) => {
 
 // <----- App Section ----->
 // Root - Get All Data
-app.get('/', (req, res) => {
+app.get('/', middleware.requireAuthentication, (req, res) => {
 
 });
 
 // Create New Entry
-app.post('/budget', (req, res) => {
+app.post('/budget', middleware.requireAuthentication, (req, res) => {
 
 });
 
 // View by id
-app.get('/budget/:id', (req, res) => {
+app.get('/budget/:id', middleware.requireAuthentication, (req, res) => {
 
 });
 
 // Update
-app.put('/budget/:id', (req, res) => {
+app.put('/budget/:id', middleware.requireAuthentication, (req, res) => {
 
 });
 
 // Delete Entry
-app.delete('/budget/:id', (req, res) => {
+app.delete('/budget/:id', middleware.requireAuthentication, (req, res) => {
 
 });
 
