@@ -1,7 +1,11 @@
+//load mongoose
+const mongoose = require('./../db/mongoose');
+
 // load Users, Incomes, Expenses
 const {users} = require('./../models/users');
 const {incomes} = require('./../models/incomes');
 const {expenses} = require('./../models/expenses');
+
 
 let dataStructure = {
   allData: {
@@ -39,9 +43,10 @@ class Expense{
   }
 };
 
-const addIncomes = () => {
+const addIncomes = (userId) => {
+
   return new Promise((resolve, reject) => {
-    incomes.find()
+    incomes.find({ 'creator_id':userId})
     .then(incomes_arr => {
 
       if(incomes_arr.length > 0) {
@@ -55,9 +60,9 @@ const addIncomes = () => {
   });
 };
 
-const addExpense = () => {
+const addExpense = (userId) => {
   return new Promise((resolve, reject) => {
-    expenses.find()
+    expenses.find({ 'creator_id': userId})
     .then(expenses_arr => {
       if(expenses_arr.length > 0) {
         for(const expense of expenses_arr) {
@@ -108,26 +113,20 @@ const addIndividualPercent = () => {
   });
 };
 
-const allDone = function() {
+const allDone = function(userId) {
   return new Promise((resolve, reject) => {
-    //console.log('Start');
-    addIncomes()
+    addIncomes(userId)
     .then(addIncomesReply => {
-      //console.log('1');
       if(addIncomesReply === 'GO') {
-        addExpense()
+        addExpense(userId)
         .then(addExpenseReply  => {
-          //console.log('2');
           if(addExpenseReply === 'GO') {
             addTotals()
             .then(addTotalsReply => {
-              //console.log('3');
               if(addTotalsReply === 'GO') {
                 addIndividualPercent()
                 .then(addIndividualPercentReply => {
-                  //console.log('4');
                   if(addIndividualPercentReply === 'GO') {
-                    //console.log('5');
                     resolve(dataStructure);
                   }
                 })
@@ -140,10 +139,13 @@ const allDone = function() {
   });
 };
 
-const setDataStructure = allDone().then(dataStructure => {
+const setDataStructure = function(userId) {
   return new Promise((resolve, reject) => {
-    resolve(dataStructure);
-  })
-});
+    allDone(userId).then(dataStructure => {
+      resolve(dataStructure);
+    });
+  });
+};
+
 
 module.exports = setDataStructure;

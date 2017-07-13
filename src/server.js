@@ -30,7 +30,7 @@ const appLogic = require('./appLogic/appLogic');
 // load bcryptjs
 const bcrypt = require('bcryptjs');
 
-// load dataStructure (Promise)
+// load dataStructure (Promise) pass -> req.user._id
 const getDataStructure = require('./appLogic/appLogic');
 
 // <----- Middleware ----->
