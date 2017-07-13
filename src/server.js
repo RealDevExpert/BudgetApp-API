@@ -19,7 +19,7 @@ const _ = require('underscore');
 const bodyParser = require('body-parser');
 
 // load middleware
-const middleware = require('./middleware/middleware');
+const middleware = require('./middleware/middleware')();
 
 // load auth
 const auth = require('./auth/auth');
@@ -63,7 +63,7 @@ app.post('/users', (req, res) => {
     //save to database
     user.save()
     .then(user_details => {
-      res.status(200).send(user_details.toPublicJSON());
+      res.status(200).send(user_details.toPublicJSON()); // Only email
     })
     .catch(err => {
       res.status(500).send(err.message)
@@ -76,11 +76,45 @@ app.post('/users', (req, res) => {
 
 // Login
 app.post('/users/login', (req, res) => {
+  // request body of user request
+  const body = _.pick(req.body, 'email', 'password');
+
+  // do authentication
+  auth(body)
+  .then(user => {
+    user.createJWT()
+    .then(tokenInstance => {
+      res.header('Auth', tokenInstance).send(user.toPublicJSON());
+    })
+    .catch(err => {
+      res.status(500).send(err.message);
+    })
+  })
+  .catch(error => {
+    res.status(400).send(error);
+  })
 
 });
 
 // Logout
-app.delete('/users/logout', (req, res) => {
+app.delete('/users/logout', middleware.requireAuthentication, (req, res) => {
+  // requester's Id & token
+  const user = req.user;
+  const userId = req.user._id;
+  const token = req.token;
+
+  // destroy token
+  if(userId !== null) {
+    users.destroyToken(token)
+    .then(success => {
+      res.send(success);
+    })
+    .catch(err => {
+      res.status(403).send(err);
+    });
+  } else {
+    res.status(400).send('Some thing went wrong..!!')
+  }
 
 });
 
