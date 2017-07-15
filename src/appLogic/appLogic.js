@@ -20,6 +20,21 @@ let dataStructure = {
   percentage: -1
 };
 
+const clearDataStructure = () => {
+  dataStructure = {
+    allData: {
+      incomes: [],
+      expenses: []
+    },
+    totals: {
+      income: 0,
+      expense: 0,
+      remain: 0
+    },
+    percentage: -1
+  };
+};
+
 class Income{
   constructor(_id, description, amount, creator_id, createOn, updatedOn) {
     this._id = _id;
@@ -44,7 +59,6 @@ class Expense{
 };
 
 const addIncomes = (userId) => {
-
   return new Promise((resolve, reject) => {
     incomes.find({ 'creator_id':userId})
     .then(incomes_arr => {
@@ -95,7 +109,7 @@ const addTotals = () => {
 
     // total expense percentage
     if(dataStructure.totals.income > 0) {
-      dataStructure.percentage = (dataStructure.totals.expense * 100) / dataStructure.totals.income;
+      dataStructure.percentage = Math.round((dataStructure.totals.expense * 100) / dataStructure.totals.income);
     }
     resolve('GO');
   });
@@ -106,7 +120,7 @@ const addIndividualPercent = () => {
     const totalIncome = dataStructure.totals.income;
     if(totalIncome > 0) {
       dataStructure.allData.expenses.forEach(cur => {
-        cur.percentage = (cur.amount * 100) / totalIncome;
+        cur.percentage = Math.round((cur.amount * 100) / totalIncome);
       });
     }
     resolve('GO');
@@ -148,4 +162,4 @@ const setDataStructure = function(userId) {
 };
 
 
-module.exports = setDataStructure;
+module.exports = {setDataStructure, clearDataStructure};

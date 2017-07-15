@@ -34,7 +34,7 @@ const appLogic = require('./appLogic/appLogic');
 const bcrypt = require('bcryptjs');
 
 // load dataStructure (Promise) pass -> req.user._id
-const getDataStructure = require('./appLogic/appLogic');
+const {setDataStructure, clearDataStructure} = require('./appLogic/appLogic');
 
 // <----- Middleware ----->
 app.use(bodyParser.json());
@@ -127,6 +127,12 @@ app.delete('/users/logout', middleware.requireAuthentication, (req, res) => {
 // <----- App Section ----->
 // Root - Get All Data
 app.get('/', middleware.requireAuthentication, (req, res) => {
+  const userId = req.user._id.toString();
+  clearDataStructure();
+  setDataStructure(userId)
+  .then(dataStructure => {
+    res.send(dataStructure);
+  });
 
 });
 
@@ -147,7 +153,7 @@ app.post('/budget', middleware.requireAuthentication, (req, res) => {
     return res.status(400).send('Description Must Not be Empty');
   }
 
-  if (type === 'Income' || 'INCOME' || 'INC' || 'inc' || 0 || 'i' || 'income') {
+  if (req.body.type === 'Income') {
     const income = new incomes({
       description,
       amount,
@@ -164,7 +170,7 @@ app.post('/budget', middleware.requireAuthentication, (req, res) => {
       res.status(500).send(err.message);
     });
 
-  } else if (type === 'Expense' || 'expense' || 'EXPENSE' || 'EXP' || 'exp' || 1 || 'e') {
+  } else if (req.body.type === 'Expense') {
 
     const expense = new expenses({
       description,
