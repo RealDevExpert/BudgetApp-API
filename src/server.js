@@ -129,12 +129,65 @@ app.get('/', middleware.requireAuthentication, (req, res) => {
 
 // Create New Entry
 app.post('/budget', middleware.requireAuthentication, (req, res) => {
+  const body = _.pick(req.body, 'type', 'description', 'amount');
+
+  const type = body.type;
+  const description = body.description;
+  const amount = body.amount;
+  const creator_id = req.user._id;
+
+  if(!_.isNumber(amount)) {
+    return res.status(400).send('Amount Must Be Number');
+  }
+
+  if(description.trim().length < 1) {
+    return res.status(400).send('Description Must Not be Empty');
+  }
+
+  if (type === 'Income' || 'INCOME' || 'INC' || 'inc' || 0 || 'i' || 'income') {
+    const income = new incomes({
+      description,
+      amount,
+      created: new Date(),
+      updated: new Date(),
+      creator_id
+    });
+
+    income.save()
+    .then(income => {
+      res.send(income);
+    })
+    .catch(err => {
+      res.status(500).send(err.message);
+    });
+
+  } else if (type === 'Expense' || 'expense' || 'EXPENSE' || 'EXP' || 'exp' || 1 || 'e') {
+
+    const expense = new expenses({
+      description,
+      amount,
+      created: new Date(),
+      updated: new Date(),
+      creator_id
+    });
+
+    expense.save()
+    .then(expense => {
+      res.status(500).send(expense);
+    })
+    .catch(err => {
+      res.send(err.message);
+    });
+
+  } else {
+    return res.status(400).send('Please Specify Entry Type');
+  }
 
 });
 
 // View by id
 app.get('/budget/:id', middleware.requireAuthentication, (req, res) => {
-
+  
 });
 
 // Update

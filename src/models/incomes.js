@@ -32,7 +32,7 @@ const incomeSchema = new Schema({
 });
 
 // create model
-const incomes = mongoose.model('incomes', incomeSchema);
+let incomes = mongoose.model('incomes', incomeSchema);
 
 // export
 module.exports = {incomes};
