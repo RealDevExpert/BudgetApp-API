@@ -7,6 +7,9 @@ const PORT = process.env.PORT || 3000;
 // load mongoose
 const {mongoose} = require('./db/mongoose');
 
+// load ObjectID from MongoDB
+const {ObjectID} = require('mongodb');
+
 // load all models
 const {users} = require('./models/users');
 const {incomes} = require('./models/incomes');
@@ -173,10 +176,10 @@ app.post('/budget', middleware.requireAuthentication, (req, res) => {
 
     expense.save()
     .then(expense => {
-      res.status(500).send(expense);
+      res.status(201).send(expense);
     })
     .catch(err => {
-      res.send(err.message);
+      res.status(400).send(err.message);
     });
 
   } else {
@@ -187,18 +190,109 @@ app.post('/budget', middleware.requireAuthentication, (req, res) => {
 
 // View by id
 app.get('/budget/:id', middleware.requireAuthentication, (req, res) => {
-  
+  let entryIdArr = req.params.id;
+  entryIdArr = entryIdArr.split('-');
+  const type = entryIdArr[0];
+  const entryId = entryIdArr[1];
+
+  if(ObjectID.isValid(entryId)) {
+    if(type === 'inc') {
+      incomes.findById(entryId)
+      .then(income => {
+        if(income !== null) {
+          res.send(income);
+        } else {
+          res.status(404).send('No Data Found');
+        }
+
+      })
+      .catch(err => {
+        res.status(400).send('Something Went Wrong. Try Again!!');
+      });
+    } else if(type === 'exp') {
+      expenses.findById(entryId)
+      .then(expense => {
+        res.send(expense);
+      })
+      .catch(err => {
+        res.status(204).send('No Data Found');
+      });
+
+    } else {
+      return res.status(400).send('Entry Type isn\'t Valid');
+    }
+  } else {
+    res.status(400).send("Entry Id is not valid");
+  }
 });
 
-// Update
-app.put('/budget/:id', middleware.requireAuthentication, (req, res) => {
+// // Update
+// app.put('/budget/:id', middleware.requireAuthentication, (req, res) => {
+//   let entryIdArr = req.params.id;
+//   entryIdArr = entryIdArr.split('-');
+//   const type = entryIdArr[0];
+//   const entryId = entryIdArr[1];
+//   let userInput = {};
+//
+//   if(ObjectID.isValid(entryId)) {
+//     if(type === 'inc') {
+//       incomes.findOneAndUpdate({_id: entryId, creator_id: req.user._id}, {$set: userInput}, {new: true})
+//       .then(updatedEntry => {
+//         if(updatedEntry !== null) {
+//
+//         }
+//       })
+//     } else if(type === 'exp') {
+//
+//     } else {
+//       res.status(400).send('Type Is Not Valid');
+//     }
+//
+//   } else {
+//     res.status(400).send('Entry Id Is Not Valid');
+//   }
+//
+// });
 
-});
-
-// Delete Entry
-app.delete('/budget/:id', middleware.requireAuthentication, (req, res) => {
-
-});
+// // Delete Entry
+// app.delete('/budget/:id', middleware.requireAuthentication, (req, res) => {
+//   let entryIdArr = req.params.id;
+//   entryIdArr = entryIdArr.split('-');
+//   const type = entryIdArr[0];
+//   const entryId = entryIdArr[1];
+//
+//  if(ObjectID.isValid(entryId)) {
+//   if(type === 'inc') {
+//     incomes.findOneAndRemove({_id: entryId, creator_id: req.user._id})
+//     .then(deletedId => {
+//       if(deletedId !== null) {
+//         res.send('Deleted Sucessfully');
+//       } else {
+//         res.status(404).send('No Data Found');
+//       }
+//     })
+//     .catch(err => {
+//       res.status(500).send('Something Went Worng. Please try Again.');
+//     });
+//   } else if (type === 'exp') {
+//     expenses.findOneAndRemove({_id: entryId, creator_id: req.user._id})
+//     .then(deletedId => {
+//       if(deletedId !== null) {
+//         res.send('Deleted Sucessfully');
+//       } else {
+//         res.status(404).send('No Data Found');
+//       }
+//     })
+//     .catch(err => {
+//       res.status(500).send('Something Went Worng. Please try Again.');
+//     });
+//   } else {
+//     res.send(400).send('Type Is Not Valid!!');
+//   }
+// } else {
+//   res.status(400).send('Entry Id Is Not Valid');
+//  }
+// });
 
 // <----- App Listen ----->
 app.listen(PORT, () => {
