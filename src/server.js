@@ -254,45 +254,45 @@ app.get('/budget/:id', middleware.requireAuthentication, (req, res) => {
 //
 // });
 
-// // Delete Entry
-// app.delete('/budget/:id', middleware.requireAuthentication, (req, res) => {
-//   let entryIdArr = req.params.id;
-//   entryIdArr = entryIdArr.split('-');
-//   const type = entryIdArr[0];
-//   const entryId = entryIdArr[1];
-//
-//  if(ObjectID.isValid(entryId)) {
-//   if(type === 'inc') {
-//     incomes.findOneAndRemove({_id: entryId, creator_id: req.user._id})
-//     .then(deletedId => {
-//       if(deletedId !== null) {
-//         res.send('Deleted Sucessfully');
-//       } else {
-//         res.status(404).send('No Data Found');
-//       }
-//     })
-//     .catch(err => {
-//       res.status(500).send('Something Went Worng. Please try Again.');
-//     });
-//   } else if (type === 'exp') {
-//     expenses.findOneAndRemove({_id: entryId, creator_id: req.user._id})
-//     .then(deletedId => {
-//       if(deletedId !== null) {
-//         res.send('Deleted Sucessfully');
-//       } else {
-//         res.status(404).send('No Data Found');
-//       }
-//     })
-//     .catch(err => {
-//       res.status(500).send('Something Went Worng. Please try Again.');
-//     });
-//   } else {
-//     res.send(400).send('Type Is Not Valid!!');
-//   }
-// } else {
-//   res.status(400).send('Entry Id Is Not Valid');
-//  }
-// });
+// Delete Entry
+app.delete('/budget/:id', middleware.requireAuthentication, (req, res) => {
+  let entryIdArr = req.params.id;
+  entryIdArr = entryIdArr.split('-');
+  const type = entryIdArr[0];
+  const entryId = entryIdArr[1];
+
+ if(ObjectID.isValid(entryId)) {
+  if(type === 'inc') {
+    incomes.findOneAndRemove({_id: entryId, creator_id: req.user._id})
+    .then(deletedId => {
+      if(deletedId !== null) {
+        res.send('Deleted Sucessfully');
+      } else {
+        res.status(404).send('No Data Found');
+      }
+    })
+    .catch(err => {
+      res.status(500).send('Something Went Worng. Please try Again.');
+    });
+  } else if (type === 'exp') {
+    expenses.findOneAndRemove({_id: entryId, creator_id: req.user._id})
+    .then(deletedId => {
+      if(deletedId !== null) {
+        res.send('Deleted Sucessfully');
+      } else {
+        res.status(404).send('No Data Found');
+      }
+    })
+    .catch(err => {
+      res.status(500).send('Something Went Worng. Please try Again.');
+    });
+  } else {
+    res.send(400).send('Type Is Not Valid!!');
+  }
+} else {
+  res.status(400).send('Entry Id Is Not Valid');
+ }
+});
 
 // <----- App Listen ----->
 app.listen(PORT, () => {
