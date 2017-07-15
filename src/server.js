@@ -197,7 +197,7 @@ app.get('/budget/:id', middleware.requireAuthentication, (req, res) => {
 
   if(ObjectID.isValid(entryId)) {
     if(type === 'inc') {
-      incomes.findById(entryId)
+      incomes.findOne({_id: entryId, creator_id: req.user._id})
       .then(income => {
         if(income !== null) {
           res.send(income);
