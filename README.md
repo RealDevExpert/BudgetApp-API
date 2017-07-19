@@ -18,9 +18,10 @@ Follow the steps below to check back-end API :
 2. Import the whole collection in your Postman App from the above link.
 3. Now set environment of Postman as below.
 | Key | Value |
-|---|---|
-| url | https://www.getpostman.com/collections/2250806e9bda9762ee18 |
-| auth | set login token here and then put it in the req.header (Auth) value |
+| --- | --- |
+| `url` | https://www.getpostman.com/collections/2250806e9bda9762ee18 |
+| `auth` | set login token here and then put it in the req.header (Auth) value |
+
 
 
 
