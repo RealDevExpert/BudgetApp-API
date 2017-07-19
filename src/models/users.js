@@ -113,10 +113,10 @@ userSchema.statics.findbyToken = function(token) {
           reject('Session Expired!!');
         });
       } else {
-        reject('Not A Valid Authentication.')
+        reject('Not A Valid Authentication.');
       }
     } catch(e) {
-      reject(e.message);
+      reject("Authentication Required!!");
     }
   });
 };
