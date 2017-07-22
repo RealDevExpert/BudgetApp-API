@@ -19,7 +19,7 @@ Follow the steps below to check back-end API :
 - URL - https://budgetapp-api.herokuapp.com
 (Only Create User and Login, these two requests don't require authentication, all others require authentication so copy `Auth` value from Login request's response header and set it in the envirement as value of key `Auth` in request header. )
 
-  ### Request Routes:
+### Request Routes:
  **Create User**
   - Type: POST
   - Endpoint: URL/users
