@@ -19,45 +19,45 @@ Follow the steps below to check back-end API :
 - URL - https://budgetapp-api.herokuapp.com
 (Only Create User and Login, these two requests don't require authentication, all others require authentication so copy `Auth` value from Login request's response header and set it in the envirement as value of key `Auth` in request header. )
 
-  ##### Request Routes:
-   **Create User**
+  ### Request Routes:
+ **Create User**
   - Type: POST
   - Endpoint: URL/users
   - Body: ```json
-{
+  {
 	"email": "xyz@gmail.com",
 	"password": "xyz"
-}
-```(Minimum password length is 5)
+  }
+  ```(Minimum password length is 5)
 
-  **User Login**
+ **User Login**
   - Type: POST
   - Endpoint: URL/users/login
   - Body: ```json
-{
+  {
 	"email": "xyz@gmail.com",
 	"password": "xyz"
-}```
- - Response Header: Copy value of key `Auth` which will be used for authentication and set this value in enviroment with the key `Auth` and set that key in header of all other requests from now.
+  }```
+  - Response Header: Copy value of key `Auth` which will be used for authentication and set this value in enviroment with the key `Auth` and set that key in header of all other requests from now.
 
  **New Entry**
   - Type: POST
   - Endpoint: URL/budget
   - Request Body: ```json
-{
+  {
 	"type": "Income",
 	"description": "First Income",
 	"amount": 400
-}
-```
- - Request Header: `Auth: value`
+  }
+ ```
+  - Request Header: `Auth: value`
 
  **Fetch All Data**
  - Type: GET
  - Endpoint: URL/
  - (Set Request Header)
 
- **Fetch Indiavidual Entry**
+ **Fetch Individual Entry**
  - Type: GET
  - Endpoint: URL/budget/:id
  - (Set Request Header)
@@ -67,7 +67,7 @@ Follow the steps below to check back-end API :
  - Endpoint: URL/budget/:id
  - (Set Request Header)
 
- **Delete Indiavidual Entry**
+ **Delete Individual Entry**
  - Type: DELETE
  - Endpoint: URL/budget/:id
  - (Set Request Header)
