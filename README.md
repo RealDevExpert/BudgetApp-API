@@ -23,33 +23,29 @@ Follow the steps below to check back-end API :
  **Create User**
   - Type: POST
   - Endpoint: URL/users
-  - Body: ```json
-  {
-	"email": "xyz@gmail.com",
-	"password": "xyz"
-  }
-  ```(Minimum password length is 5)
+  - Body: `{
+	           "email": "xyz@gmail.com",
+	           "password": "xyz"
+            }`
+  (Minimum password length is 5)
 
  **User Login**
   - Type: POST
   - Endpoint: URL/users/login
-  - Body: ```json
-  {
-	"email": "xyz@gmail.com",
-	"password": "xyz"
-  }```
+  - Body: `{
+	           "email": "xyz@gmail.com",
+	           "password": "xyz"
+            }`
   - Response Header: Copy value of key `Auth` which will be used for authentication and set this value in enviroment with the key `Auth` and set that key in header of all other requests from now.
 
  **New Entry**
   - Type: POST
   - Endpoint: URL/budget
-  - Request Body: ```json
-  {
-	"type": "Income",
-	"description": "First Income",
-	"amount": 400
-  }
- ```
+  - Request Body: `{
+	                   "type": "Income",
+	                   "description": "First Income",
+	                   "amount": 400
+                  }`
   - Request Header: `Auth: value`
 
  **Fetch All Data**
