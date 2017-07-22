@@ -87,7 +87,7 @@ Follow the steps below to check back-end API :
 ### <a name="future-improvements"></a> 4. Goals
 * [X] Create a back-end API with Node.js
 * [X] Use MongoDB as a No Sql Database
-* [] Give a attaractive front-end look with React
-* [] Develop a mobile app using React native
+* Give a attaractive front-end look with React
+* Develop a mobile app using React native
 
 _Any suggestions for the API are welcomed. Please email me at devashish2910@gmail.com to share your suggestions_
