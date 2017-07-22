@@ -55,17 +55,17 @@ Follow the steps below to check back-end API :
 
  **Fetch Individual Entry**
  - Type: GET
- - Endpoint: URL/budget/:id
+ - Endpoint: URL/budget/:id (e.g: id -> `inc-5969902e3989c2063b925d4a`)
  - (Set Request Header)
 
  **UpdateEntry**
  - Type: PUT
- - Endpoint: URL/budget/:id
+ - Endpoint: URL/budget/:id (e.g: id -> `exp-5969902e3989c2063b925d4a`)
  - (Set Request Header)
 
  **Delete Individual Entry**
  - Type: DELETE
- - Endpoint: URL/budget/:id
+ - Endpoint: URL/budget/:id (e.g: id -> `inc-5969902e3989c2063b925d4a`)
  - (Set Request Header)
 
  **USER LOGOUT**
