@@ -17,7 +17,7 @@ Follow the steps below to check back-end API :
 
 -  Postman Collection Link : https://www.getpostman.com/collections/2250806e9bda9762ee18
 - URL - https://budgetapp-api.herokuapp.com
-(Only Create User and Login, these two requests don't require authentication, all others require authentication so copy `Auth` value from Login request's response header and set it in the envirement as value of key `Auth` in request header. )
+(Only Create User and Login, these two requests don't require authentication, all other requests require authentication.)
 
 ### Request Routes:
  **Create User**
