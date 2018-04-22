@@ -72,7 +72,7 @@ app.post('/users', (req, res) => {
       res.status(200).send(user_details.toPublicJSON()); // Only email
     })
     .catch(err => {
-      res.status(500).send(err.message)
+      res.status(409).send("User Already Exist!")
     });
   })
   .catch(err => {
@@ -119,7 +119,7 @@ app.delete('/users/logout', middleware.requireAuthentication, (req, res) => {
       res.status(403).send(err);
     });
   } else {
-    res.status(400).send('Some thing went wrong..!!')
+    res.status(400).send('Something went wrong..!!')
   }
 
 });
@@ -210,18 +210,21 @@ app.get('/budget/:id', middleware.requireAuthentication, (req, res) => {
         } else {
           res.status(404).send('No Data Found');
         }
-
       })
       .catch(err => {
         res.status(400).send('Something Went Wrong. Try Again!!');
       });
     } else if(type === 'exp') {
-      expenses.findById(entryId)
+      expenses.findOne({_id: entryId, creator_id: req.user._id})
       .then(expense => {
-        res.send(expense);
+        if(expense !== null) {
+          res.send(expense);
+        } else {
+          res.status(404).send('No Data Found');
+        }
       })
       .catch(err => {
-        res.status(204).send('No Data Found');
+        res.status(404).send('No Data Found');
       });
 
     } else {
