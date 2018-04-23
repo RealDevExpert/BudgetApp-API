@@ -322,12 +322,9 @@ app.get('/budget/expense/:id', middleware.requireAuthentication, (req, res) => {
     }
 });
 
-// Update
-app.put('/budget/:id', middleware.requireAuthentication, (req, res) => {
-    let entryIdArr = req.params.id;
-    entryIdArr = entryIdArr.split('-');
-    const type = entryIdArr[0];
-    const entryId = entryIdArr[1];
+// Update Income by id
+app.put('/budget/income/:id', middleware.requireAuthentication, (req, res) => {
+    const entryId = req.params.id;
     let userInput = {};
     userInput.updated = new Date();
 
@@ -336,50 +333,70 @@ app.put('/budget/:id', middleware.requireAuthentication, (req, res) => {
         userInput.description = req.body.description.trim();
     } else if (req.body.hasOwnProperty('description')) {
         // return 400
-        return res.status(400).send("Not appropriate value");
+        return res.status(400).send({status: "error", error: "Description is invalid!"});
     }
 
     if(req.body.hasOwnProperty('amount') && _.isNumber(req.body.amount) && req.body.amount > 0) {
         userInput.amount = req.body.amount;
     } else if (req.body.hasOwnProperty('amount')) {
-        return res.status(400).send("Amount Must Be Valid Number and Greater Than Zero( 0 )");
+        return res.status(400).send({status: "error", error: 'Amount Must Be Valid Number and Greater Than Zero( 0 )'});
     }
 
     if(ObjectID.isValid(entryId)) {
-        if(type === 'inc') {
-            incomes.findOneAndUpdate({_id: entryId, creator_id: req.user._id}, {$set: userInput}, {new: true})
-                .then(updatedEntry => {
-                    if(updatedEntry !== null) {
-                        res.send('Entry Updated Successfully')
-                    } else {
-                        res.status(404).send('No Data Found');
-                    }
-                })
-                .catch(err => {
-                    res.status(500).send(err.message);
-                });
-        } else if(type === 'exp') {
-            expenses.findOneAndUpdate({_id: entryId, creator_id: req.user._id}, {$set: userInput}, {new: true})
-                .then(updatedEntry => {
-                    if(updatedEntry !== null) {
-                        res.send('Entry Updated Successfully')
-                    } else {
-                        res.status(404).send('No Data Found');
-                    }
-                })
-                .catch(err => {
-                    res.status(500).send(err.message);
-                });
-        } else {
-            res.status(400).send('Type Is Not Valid');
-        }
+        incomes.findOneAndUpdate({_id: entryId, creator_id: req.user._id}, {$set: userInput}, {new: true})
+            .then(updatedEntry => {
+                if(updatedEntry !== null) {
+                    res.send({status: "success", data: updatedEntry})
+                } else {
+                    res.status(404).send({status: "error", error: 'No Data Found'});
+                }
+            })
+            .catch(err => {
+                res.status(500).send({status: "error", error: err.message});
+            });
     } else {
-        res.status(400).send('Entry Id Is Not Valid');
+        res.status(400).send({status: "error", error: 'Invalid Entry Id'});
     }
-
 });
 
-// Delete an Income
+// Update Expense by id
+app.put('/budget/expense/:id', middleware.requireAuthentication, (req, res) => {
+    const entryId = req.params.id;
+    let userInput = {};
+    userInput.updated = new Date();
+
+    if(req.body.hasOwnProperty('description') && _.isString(req.body.description) && req.body.description.trim().length > 0) {
+        // update the value
+        userInput.description = req.body.description.trim();
+    } else if (req.body.hasOwnProperty('description')) {
+        // return 400
+        return res.status(400).send({status: "error", error: "Description is invalid!"});
+    }
+
+    if(req.body.hasOwnProperty('amount') && _.isNumber(req.body.amount) && req.body.amount > 0) {
+        userInput.amount = req.body.amount;
+    } else if (req.body.hasOwnProperty('amount')) {
+        return res.status(400).send({status: "error", error: 'Amount Must Be Valid Number and Greater Than Zero( 0 )'});
+    }
+
+    if(ObjectID.isValid(entryId)) {
+        expenses.findOneAndUpdate({_id: entryId, creator_id: req.user._id}, {$set: userInput}, {new: true})
+            .then(updatedEntry => {
+                if(updatedEntry !== null) {
+                    res.send({status: "success", data: updatedEntry})
+                } else {
+                    res.status(404).send({status: "error", error: 'No Data Found'});
+                }
+            })
+            .catch(err => {
+                res.status(500).send({status: "error", error: err.message});
+            });
+    } else {
+        res.status(400).send({status: "error", error: 'Invalid Entry Id'});
+    }
+});
+
+// Delete an Income by id
 app.delete('/budget/income/:id', middleware.requireAuthentication, (req, res) => {
     const entryId = req.params.id;
 
@@ -400,7 +417,7 @@ app.delete('/budget/income/:id', middleware.requireAuthentication, (req, res) =>
     }
 });
 
-// Delete an Income
+// Delete an Income by id
 app.delete('/budget/expense/:id', middleware.requireAuthentication, (req, res) => {
     const entryId = req.params.id;
 
