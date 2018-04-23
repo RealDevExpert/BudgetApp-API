@@ -6,7 +6,7 @@ module.exports = function() {
   return {
     requireAuthentication: (req, res, next) => {
       // get token from header
-      const token = req.header('Auth');
+      const token = req.header('Authorization');
 
       // check the user exists with the token or not
       users.findbyToken(token)

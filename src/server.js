@@ -82,7 +82,7 @@ app.post('/users/signup', (req, res) => {
                 .catch(err => {
                     const resp = {
                         status: "error",
-                        error: "User already exist with this username!"
+                        error: "User already exist with this email!"
                     };
                     res.status(409).send(resp)
                 });
@@ -169,9 +169,12 @@ app.get('/', middleware.requireAuthentication, (req, res) => {
     clearDataStructure();
     setDataStructure(userId)
         .then(dataStructure => {
-            res.send(dataStructure);
+            const resp = {
+                status: "success",
+                error: dataStructure
+            };
+            res.send(resp);
         });
-
 });
 
 // Create New Entry
