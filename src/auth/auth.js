@@ -12,11 +12,11 @@ module.exports = function(body) {
       if(bcrypt.compareSync(body.password, user_details.get('password'))) {
         resolve(user_details);
       } else {
-         reject('Password does not Match!!');
+         reject('Invalid Password!');
       }
     })
     .catch(err => {
-      reject('No User Found!!')
+      reject('Invalid User!')
     });
 
   });

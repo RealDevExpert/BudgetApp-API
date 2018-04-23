@@ -22,7 +22,7 @@ Follow the steps below to check back-end API :
 ### Request Routes:
  **Create User**
   - Type: POST
-  - Endpoint: URL/users
+  - Endpoint: URL/budget/users/signup
   - Body: `{
 	           "email": "xyz@gmail.com",
 	           "password": "xyz"
@@ -31,46 +31,61 @@ Follow the steps below to check back-end API :
 
  **User Login**
   - Type: POST
-  - Endpoint: URL/users/login
+  - Endpoint: URL/budget/users/login
   - Body: `{
 	           "email": "xyz@gmail.com",
 	           "password": "xyz"
             }`
-  - Response Header: Copy value of key `Auth` which will be used for authentication and set this value in enviroment with the key `Auth` and set that key in header of all other requests from now.
+  - Response Header: Copy value of key `auth` which will be used for authentication and set this value in environment with the key `Authorization` and set that key in header of all other requests from now.
 
  **New Entry**
   - Type: POST
-  - Endpoint: URL/budget
+  - Endpoint: URL/budget/add
   - Request Body: `{
 	                   "type": "Income",
 	                   "description": "First Income",
 	                   "amount": 400
                   }`
-  - Request Header: `Auth: value`
+  - Request Header: `Authorization: JWT token value(From Response Header find 'auth')`
 
  **Fetch All Data**
  - Type: GET
- - Endpoint: URL/
+ - Endpoint: URL/budget/all
  - (Set Request Header)
 
- **Fetch Individual Entry**
+ **Fetch Individual Income**
  - Type: GET
- - Endpoint: URL/budget/:id (e.g: id -> `inc-5969902e3989c2063b925d4a`)
+ - Endpoint: URL/budget/income/:id (e.g: id -> `5969902e3989c2063b925d4a`)
  - (Set Request Header)
 
- **UpdateEntry**
+ **Fetch Individual Expense**
+  - Type: GET
+  - Endpoint: URL/budget/expense/:id (e.g: id -> `5969902e3989c2063b925d4a`)
+  - (Set Request Header)
+
+ **Update Individual Income**
  - Type: PUT
- - Endpoint: URL/budget/:id (e.g: id -> `exp-5969902e3989c2063b925d4a`)
+ - Endpoint: URL/budget/income/:id (e.g: id -> `5969902e3989c2063b925d4a`)
  - (Set Request Header)
 
- **Delete Individual Entry**
+ **Update Individual Expense**
+  - Type: PUT
+  - Endpoint: URL/budget/expense/:id (e.g: id -> `5969902e3989c2063b925d4a`)
+  - (Set Request Header)
+
+ **Delete Individual Income**
  - Type: DELETE
- - Endpoint: URL/budget/:id (e.g: id -> `inc-5969902e3989c2063b925d4a`)
+ - Endpoint: URL/budget/income/:id (e.g: id -> `5969902e3989c2063b925d4a`)
  - (Set Request Header)
+
+ **Delete Individual Expense**
+  - Type: DELETE
+  - Endpoint: URL/budget/expense/:id (e.g: id -> `5969902e3989c2063b925d4a`)
+  - (Set Request Header)
 
  **USER LOGOUT**
  - Type: DELETE
- - Endpoint: URL/users/logout
+ - Endpoint: URL/budget/users/logout
  - (Set Request Header)
 `
 
