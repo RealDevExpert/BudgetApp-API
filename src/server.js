@@ -380,42 +380,44 @@ app.put('/budget/:id', middleware.requireAuthentication, (req, res) => {
 });
 
 // Delete an Income
-app.delete('/budget/:id', middleware.requireAuthentication, (req, res) => {
-    let entryIdArr = req.params.id;
-    entryIdArr = entryIdArr.split('-');
-    const type = entryIdArr[0];
-    const entryId = entryIdArr[1];
+app.delete('/budget/income/:id', middleware.requireAuthentication, (req, res) => {
+    const entryId = req.params.id;
 
     if(ObjectID.isValid(entryId)) {
-        if(type === 'inc') {
-            incomes.findOneAndRemove({_id: entryId, creator_id: req.user._id})
-                .then(deletedId => {
-                    if(deletedId !== null) {
-                        res.send('Deleted Sucessfully');
-                    } else {
-                        res.status(404).send('No Data Found');
-                    }
-                })
-                .catch(err => {
-                    res.status(500).send('Something Went Worng. Please try Again.');
-                });
-        } else if (type === 'exp') {
-            expenses.findOneAndRemove({_id: entryId, creator_id: req.user._id})
-                .then(deletedId => {
-                    if(deletedId !== null) {
-                        res.send('Deleted Sucessfully');
-                    } else {
-                        res.status(404).send('No Data Found');
-                    }
-                })
-                .catch(err => {
-                    res.status(500).send('Something Went Worng. Please try Again.');
-                });
-        } else {
-            res.send(400).send('Type Is Not Valid!!');
-        }
+        incomes.findOneAndRemove({_id: entryId, creator_id: req.user._id})
+            .then(deletedId => {
+                if(deletedId !== null) {
+                    res.send({status: "success", data:"Deleted Successfully!"});
+                } else {
+                    res.status(404).send({status: "error", error: 'No Data Found'});
+                }
+            })
+            .catch(err => {
+                res.status(500).send({status: "error", error: 'Something Went Wrong. Please try Again.'});
+            });
     } else {
-        res.status(400).send('Entry Id Is Not Valid');
+        res.status(400).send({status: "error", error: "Invalid Entry Id!"});
+    }
+});
+
+// Delete an Income
+app.delete('/budget/expense/:id', middleware.requireAuthentication, (req, res) => {
+    const entryId = req.params.id;
+
+    if(ObjectID.isValid(entryId)) {
+        expenses.findOneAndRemove({_id: entryId, creator_id: req.user._id})
+            .then(deletedId => {
+                if(deletedId !== null) {
+                    res.send({status: "success", data:"Deleted Successfully!"});
+                } else {
+                    res.status(404).send({status: "error", error: 'No Data Found'});
+                }
+            })
+            .catch(err => {
+                res.status(500).send({status: "error", error: 'Something Went Wrong. Please try Again.'});
+            });
+    } else {
+        res.status(400).send({status: "error", error: "Invalid Entry Id!"});
     }
 });
 
