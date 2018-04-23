@@ -41,7 +41,7 @@ app.use(bodyParser.json());
 
 // <----- User Section ----->
 // Create User
-app.post('/users/signup', (req, res) => {
+app.post('/budget/users/signup', (req, res) => {
     // request body of user request
     const body = _.pick(req.body, 'email', 'password');
 
@@ -97,7 +97,7 @@ app.post('/users/signup', (req, res) => {
 });
 
 // Login
-app.post('/users/login', (req, res) => {
+app.post('/budget/users/login', (req, res) => {
     // request body of user request
     const body = _.pick(req.body, 'email', 'password');
 
@@ -130,7 +130,7 @@ app.post('/users/login', (req, res) => {
 });
 
 // Logout
-app.delete('/users/logout', middleware.requireAuthentication, (req, res) => {
+app.delete('/budget/users/logout', middleware.requireAuthentication, (req, res) => {
     // requester's Id & token
     const user = req.user;
     const userId = req.user._id;
@@ -164,16 +164,16 @@ app.delete('/users/logout', middleware.requireAuthentication, (req, res) => {
 
 // <----- App Section ----->
 // Root - Get All Data
-app.get('/', middleware.requireAuthentication, (req, res) => {
+app.get('/budget/all', middleware.requireAuthentication, (req, res) => {
     const userId = req.user._id.toString();
     clearDataStructure();
     setDataStructure(userId)
         .then(dataStructure => {
             const resp = {
                 status: "success",
-                error: dataStructure
+                data: dataStructure
             };
-            res.send(resp);
+            res.status(200).send(resp);
         });
 });
 

@@ -44,7 +44,7 @@ class Income{
     this.createdOn = createOn;
     this.updatedOn = updatedOn;
   }
-};
+}
 
 class Expense{
   constructor(_id, description, amount, creator_id, createOn, updatedOn, percentage) {
@@ -56,13 +56,12 @@ class Expense{
     this.updatedOn = updatedOn;
     this.percentage = -1;
   }
-};
+}
 
 const addIncomes = (userId) => {
   return new Promise((resolve, reject) => {
     incomes.find({ 'creator_id':userId})
     .then(incomes_arr => {
-
       if(incomes_arr.length > 0) {
         for(const income of incomes_arr) {
           const newIncome = new Income(income._id, income.description, income.amount, income.creator_id, income.created, income.updated);
