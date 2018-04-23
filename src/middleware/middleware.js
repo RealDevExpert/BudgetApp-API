@@ -16,7 +16,11 @@ module.exports = function() {
         next();
       })
       .catch(err => {
-        res.status(401).send(err);
+          const resp = {
+              status: "error",
+              error: err
+          };
+        res.status(401).send(resp);
       })
     }
   }

@@ -82,18 +82,18 @@ app.post('/users/signup', (req, res) => {
                 .catch(err => {
                     const resp = {
                         status: "error",
-                        data: "User already exist with this username!"
+                        error: "User already exist with this username!"
                     };
                     res.status(409).send(resp)
                 });
-        })
-        .catch(err => {
+        });
+        /*.catch(err => {
             const resp = {
                 status: "error",
                 data: "Something went wrong on our side! Please, try again later."
             };
             res.status(500).send(resp);
-        });
+        });*/
 });
 
 // Login
@@ -106,16 +106,27 @@ app.post('/users/login', (req, res) => {
         .then(user => {
             user.createJWT()
                 .then(tokenInstance => {
-                    res.header('Auth', tokenInstance).send(user.toPublicJSON());
+                    const resp = {
+                        status: "success",
+                        data: user.toPublicJSON()
+                    };
+                    res.header('Auth', tokenInstance).send(resp);
                 })
-                .catch(err => {
-                    res.status(500).send(err.message);
+                .catch(error => {
+                    const resp = {
+                        status: "error",
+                        error: error.message
+                    };
+                    res.status(401).send(resp);
                 })
         })
         .catch(error => {
-            res.status(400).send(error);
-        })
-
+            const resp = {
+                status: "error",
+                message: error
+            };
+            res.status(401).send(resp);
+        });
 });
 
 // Logout
@@ -129,15 +140,26 @@ app.delete('/users/logout', middleware.requireAuthentication, (req, res) => {
     if(userId !== null) {
         users.destroyToken(token)
             .then(success => {
-                res.send(success);
+                const resp = {
+                    status: "success",
+                    data: success
+                };
+                res.send(resp);
             })
             .catch(err => {
-                res.status(403).send(err);
+                const resp = {
+                    status: "error",
+                    error: err
+                };
+                res.status(403).send(resp);
             });
     } else {
-        res.status(400).send('Something went wrong..!!')
+        const resp = {
+            status: "error",
+            error: "Something went wrong!"
+        };
+        res.status(403).send(resp)
     }
-
 });
 
 // <----- App Section ----->
