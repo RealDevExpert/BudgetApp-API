@@ -162,7 +162,7 @@ app.delete('/budget/users/logout', middleware.requireAuthentication, (req, res) 
     }
 });
 
-// <----- App Section ----->
+// <----- Income/Expense Section ----->
 // Root - Get All Data
 app.get('/budget/all', middleware.requireAuthentication, (req, res) => {
     const userId = req.user._id.toString();
@@ -178,7 +178,7 @@ app.get('/budget/all', middleware.requireAuthentication, (req, res) => {
 });
 
 // Create New Entry
-app.post('/budget', middleware.requireAuthentication, (req, res) => {
+app.post('/budget/add', middleware.requireAuthentication, (req, res) => {
     const body = _.pick(req.body, 'type', 'description', 'amount');
 
     const type = body.type;
@@ -187,14 +187,22 @@ app.post('/budget', middleware.requireAuthentication, (req, res) => {
     const creator_id = req.user._id;
 
     if(!_.isNumber(amount) && amount < 1) {
-        return res.status(400).send('Amount Must Be Valid Number and Greater Than Zero( 0 )');
+        const resp = {
+            status: "error",
+            error: 'Amount Must Be Valid Number and Greater Than Zero( 0 )'
+        };
+        return res.status(400).send(resp);
     }
 
     if(description.trim().length < 1) {
-        return res.status(400).send('Description Must Not be Empty');
+        const resp = {
+            status: "error",
+            error: 'Description Must Not be Empty'
+        };
+        return res.status(400).send(resp);
     }
 
-    if (req.body.type === 'Income') {
+    if (type === 'Income') {
         const income = new incomes({
             description,
             amount,
@@ -205,14 +213,20 @@ app.post('/budget', middleware.requireAuthentication, (req, res) => {
 
         income.save()
             .then(income => {
-                res.send(income);
+                const resp = {
+                    status: "success",
+                    data: income
+                };
+                res.status(201).send(resp);
             })
             .catch(err => {
-                res.status(500).send(err.message);
+                const resp = {
+                    status: "error",
+                    error: err.message
+                };
+                res.status(500).send(resp);
             });
-
-    } else if (req.body.type === 'Expense') {
-
+    } else if (type === 'Expense') {
         const expense = new expenses({
             description,
             amount,
@@ -223,56 +237,88 @@ app.post('/budget', middleware.requireAuthentication, (req, res) => {
 
         expense.save()
             .then(expense => {
-                res.status(201).send(expense);
+                const resp = {
+                    status: "success",
+                    data: expense
+                };
+                res.status(201).send(resp);
             })
             .catch(err => {
-                res.status(400).send(err.message);
+                const resp = {
+                    status: "error",
+                    error: err.message
+                };
+                res.status(500).send(resp);
             });
 
     } else {
-        return res.status(400).send('Please Specify Entry Type');
+        const resp = {
+            status: "error",
+            error: "Please Specify Entry Type!"
+        };
+        return res.status(400).send(resp);
     }
-
 });
 
-// View by id
-app.get('/budget/:id', middleware.requireAuthentication, (req, res) => {
-    let entryIdArr = req.params.id;
-    entryIdArr = entryIdArr.split('-');
-    const type = entryIdArr[0];
-    const entryId = entryIdArr[1];
+// Get Income by id
+app.get('/budget/income/:id', middleware.requireAuthentication, (req, res) => {
+    const entryId = req.params.id;
 
     if(ObjectID.isValid(entryId)) {
-        if(type === 'inc') {
-            incomes.findOne({_id: entryId, creator_id: req.user._id})
-                .then(income => {
-                    if(income !== null) {
-                        res.send(income);
-                    } else {
-                        res.status(404).send('No Data Found');
-                    }
-                })
-                .catch(err => {
-                    res.status(400).send('Something Went Wrong. Try Again!!');
-                });
-        } else if(type === 'exp') {
-            expenses.findOne({_id: entryId, creator_id: req.user._id})
-                .then(expense => {
-                    if(expense !== null) {
-                        res.send(expense);
-                    } else {
-                        res.status(404).send('No Data Found');
-                    }
-                })
-                .catch(err => {
-                    res.status(404).send('No Data Found');
-                });
-
-        } else {
-            return res.status(400).send('Entry Type isn\'t Valid');
-        }
+        incomes.findOne({_id: entryId, creator_id: req.user._id})
+            .then(income => {
+                if(income !== null) {
+                    const resp = {
+                        status: "success",
+                        data: income
+                    };
+                    res.status(200).send(resp);
+                } else {
+                    const resp = {
+                        status: "error",
+                        error: "No Data Found"
+                    };
+                    res.status(404).send(resp);
+                }
+            })
+            .catch(err => {
+                const resp = {
+                    status: "error",
+                    error: err.message
+                };
+                res.status(500).send(resp);
+            });
     } else {
-        res.status(400).send("Entry Id is not valid");
+        const resp = {
+            status: "error",
+            error: "Invalid Entry Id!"
+        };
+        res.status(400).send(resp);
+    }
+});
+
+// Get Expense by id
+app.get('/budget/expense/:id', middleware.requireAuthentication, (req, res) => {
+    const entryId = req.params.id;
+
+    if(ObjectID.isValid(entryId)) {
+        expenses.findOne({_id: entryId, creator_id: req.user._id})
+            .then(expense => {
+                if(expense !== null) {
+                    const resp = {
+                        status: "success",
+                        data: expense
+                    };
+                    res.status(200).send(resp);
+                } else {
+                    res.status(404).send({status:"error", error: 'No Data Found'});
+                }
+            })
+            .catch(err => {
+                res.status(404).send({status:"error", error: 'No Data Found'});
+            });
+    } else {
+        res.status(400).send({status:"error", error: 'Invalid Entry Id'});
     }
 });
 
@@ -333,7 +379,7 @@ app.put('/budget/:id', middleware.requireAuthentication, (req, res) => {
 
 });
 
-// Delete Entry
+// Delete an Income
 app.delete('/budget/:id', middleware.requireAuthentication, (req, res) => {
     let entryIdArr = req.params.id;
     entryIdArr = entryIdArr.split('-');
